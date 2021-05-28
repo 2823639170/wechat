@@ -43,24 +43,25 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ServiceResult checkRegister(User user) {
-        if(user==null){
-            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
-        }
+//        if(user==null){
+//            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
+//        }
+
         try {
             //防止插入id
             user.setId(null);
-            //检查邮箱格式
-            if (!isValidEmail(user.getEmail())) {
-                return new ServiceResult(Status.ERROR, EMAIL_FORMAT_INCORRECT.message, user);
-            }
+//            //检查邮箱格式
+//            if (!isValidEmail(user.getEmail())) {
+//                return new ServiceResult(Status.ERROR, EMAIL_FORMAT_INCORRECT.message, user);
+//            }
             //检查邮箱是否已被注册
             if (userDao.getUserByEmail(user.getEmail()) != null) {
                 return new ServiceResult(Status.ERROR, EMAIL_ALREADY_USED.message, user);
             }
-            //检查密码是否合法
-            if (!isValidPassword(user.getPassword())) {
-                return new ServiceResult(Status.ERROR, INVALID_PASSWORD.message, user);
-            }
+//            //检查密码是否合法
+//            if (!isValidPassword(user.getPassword())) {
+//                return new ServiceResult(Status.ERROR, INVALID_PASSWORD.message, user);
+//            }
         } catch (DaoException e) {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, user);
@@ -250,13 +251,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 返回昵称与传入参数相似的用户列表
-     *
-     * @param name 用户昵称
+     * @param name
      * @return
-     * @name listUserLikeName
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/5/6
      */
     @Override
     public ServiceResult listUserLikeName(String name) {
@@ -284,11 +280,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 创建一个游客账号，并自动通过登陆
-     *
-     * @name visitorLogin
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/5/9
+     * @return
      */
     @Override
     public ServiceResult visitorLogin() {

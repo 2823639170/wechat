@@ -21,9 +21,7 @@ import static com.guojianyong.service.constants.ServiceMessage.*;
 import static com.guojianyong.utils.UUIDUtils.getUUID;
 
 /**
- * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @description 负责提供消息和聊天记录的服务
- * @date 2019-05-07 14:35
+ * 负责提供消息和聊天记录的服务
  */
 public class MessageServiceImpl implements MessageService {
 

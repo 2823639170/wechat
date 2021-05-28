@@ -77,7 +77,7 @@ public class UserServlet extends BaseServlet {
             addToHYCChat(user);
             req.setAttribute("message",result.getMessage());
             req.setAttribute("data",result.getData());
-            req.getRequestDispatcher(WebPage.LOGIN_JSP.toString()).forward(req,resp);
+            req.getRequestDispatcher("http://localhost:8080/wechat/pages/index.jsp").forward(req,resp);
         }
     }
 
@@ -90,7 +90,7 @@ public class UserServlet extends BaseServlet {
      * @throws IOException
      */
     public void login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = (User) BeanUtils.populate(req.getParameterMap(), User.class);
+        User user =  BeanUtils.populate(req.getParameterMap(), User.class);
 
         ServiceResult result;
         if (user == null) {
@@ -117,7 +117,6 @@ public class UserServlet extends BaseServlet {
                 addToDefaultChat(visitor);
                 //与系统账号加好友
                 addToSystemChat(visitor);
-                //添加hyc
 //                addToHYCChat(visitor);
             } else {
                 //如果是用户登陆，校验密码是否正确
@@ -143,9 +142,11 @@ public class UserServlet extends BaseServlet {
             //先从session获取用户信息，再更新用户信息到会话中
             user = (User) session.getAttribute("login");
             result = userService.getUser(user.getId());
+            System.out.println(result);
         }
+        System.out.println("ssss");
         req.getSession(true).setAttribute("login", result.getData());
-        req.getRequestDispatcher(WebPage.INDEX_JSP.toString()).forward(req,resp);
+        req.getRequestDispatcher("http://localhost:8080/wechat/pages/index.jsp").forward(req,resp);
     }
 
     /**
@@ -281,13 +282,8 @@ public class UserServlet extends BaseServlet {
     }
 
     /**
-     * 将一个用户添加到聊天总群(id=0)
-     *
-     * @param user 用户
-     * @name addToDefaultChat
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/5/9
+     * 将一个用户添加到聊天总群
+     * @param user
      */
     private void addToDefaultChat(User user) {
         Member member = new Member();
@@ -323,16 +319,13 @@ public class UserServlet extends BaseServlet {
      */
     private void addToHYCChat(User user) {
         Friend friend = new Friend();
-        //hyc添加用户账号为好友
         friend.setUserId(BigInteger.valueOf(1));
         friend.setFriendId(user.getId());
         friendService.addFriend(friend);
         friend.setAlias(null);
-        //用户添加hyc账号为好友
         friend.setUserId(user.getId());
         friend.setFriendId(BigInteger.valueOf(1));
         friendService.addFriend(friend);
-        //将用户和hyc账号（id=1）添加到同一个聊天中
         chatService.createFriendChat(friend);
         //初始朋友圈
         momentService.initNews(friend);

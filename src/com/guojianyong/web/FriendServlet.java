@@ -111,11 +111,9 @@ public class FriendServlet extends BaseServlet {
 
     /**
      * 提供删除好友的服务
-     *
-     * @name deleteFriend
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/5/9
+     * @param req
+     * @param resp
+     * @throws IOException
      */
     synchronized public void deleteFriend(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String friendId = req.getParameter("friend_id");

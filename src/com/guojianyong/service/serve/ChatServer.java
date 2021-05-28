@@ -166,14 +166,8 @@ public class ChatServer {
 
     /**
      * 用于向系统中的在线用户发送一条通知
-     *
-     * @param message 消息
-     * @param userId  消息接收者的id
-     * @return
-     * @name sendNotify
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/5/13
+     * @param message
+     * @param userId
      */
     public static void sendNotify(Message message, BigInteger userId) {
         //从容器中获取server
@@ -245,11 +239,7 @@ public class ChatServer {
 
         /**
          * 将一条消息加入到队列中
-         *
-         * @param message 用户发送的消息
-         * @name enQueue
-         * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-         * @date 2019/5/7
+         * @param message
          */
         private void enQueue(Message message) {
             this.messageQueue.add(message);

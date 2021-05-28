@@ -84,12 +84,8 @@ public interface ChatService {
 
     /**
      * 查询一个聊天中所有成员的信息
-     *
-     * @param chatId 聊天id
-     * @name listMember
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/5/10
+     * @param chatId
+     * @return
      */
     ServiceResult listMember(BigInteger chatId);
 

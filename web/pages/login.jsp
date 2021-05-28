@@ -37,9 +37,9 @@
 							<div class="form">
 								<form action="userServlet" method="post">
 									<input type="hidden" name="action" value="login" />
-									<label>用户名称：</label>
+									<label>  邮 箱： </label>
 									<input class="itxt" type="text" placeholder="请输入用户名"
-										   autocomplete="off" tabindex="1" name="username"
+										   autocomplete="off" tabindex="1" name="email"
 										   value="${requestScope.username}" />
 									<br />
 									<br />

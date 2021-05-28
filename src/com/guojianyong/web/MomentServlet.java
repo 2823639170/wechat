@@ -24,11 +24,10 @@ public class MomentServlet extends BaseServlet {
 
     /**
      * 提供发布朋友圈的业务流程
-     *
-     * @name postMoment
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/5/9
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
      */
     public void postMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Moment moment = (Moment) jsonToJavaObject(req.getInputStream(), Moment.class);

@@ -125,8 +125,8 @@
 								</span>
 							</div>
 							<div class="form">
-								<form action="/userServlet" method="post">
-									<input type="hidden" name="action" value="regist">
+								<form action="userServlet" method="post">
+									<input type="hidden" name="action" value="register">
 									<label>用户名称：</label>
 									<input class="itxt" type="text" placeholder="5-15位的数字、字母"
 										   value="${requestScope.username}"

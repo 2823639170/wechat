@@ -7,11 +7,7 @@ import com.guojianyong.model.Message;
 import java.math.BigInteger;
 import java.util.List;
 
-/**
- * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @description 用于message表的CRUD
- * @date 2019-05-03 13:06
- */
+
 public interface MessageDao extends BaseDao {
 
 

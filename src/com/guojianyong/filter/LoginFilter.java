@@ -15,7 +15,7 @@ public class LoginFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
-        Object user = httpServletRequest.getSession().getAttribute("user");
+        Object user = httpServletRequest.getSession().getAttribute("login");
 
         if (user == null) {
             httpServletRequest.getRequestDispatcher("/pages/login.jsp").forward(servletRequest,servletResponse);
