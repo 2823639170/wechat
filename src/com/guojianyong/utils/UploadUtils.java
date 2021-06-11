@@ -16,9 +16,11 @@ public class UploadUtils {
     public static String toPhotoName(Part part) throws IOException {
         String head = part.getHeader("Content-Disposition");
         String filename = UUIDUtils.getUUID() + head.substring(head.lastIndexOf("."), head.lastIndexOf("\""));
+//        String realPath = getServletContext().getRealPath("/img");
         part.write("photo/"+filename);
         return filename;
     }
+
 
     /**
      * 用于上传一个文件，返回该文件的文件名(写入file文件夹)

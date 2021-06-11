@@ -14,6 +14,8 @@ import com.guojianyong.service.impl.FriendServiceImpl;
 import com.guojianyong.service.impl.MomentServiceImpl;
 import com.guojianyong.service.impl.UserServiceImpl;
 import com.guojianyong.utils.BeanUtils;
+import com.guojianyong.web.annotation.Action;
+import com.guojianyong.web.constant.RequestMethod;
 import com.guojianyong.web.constant.WebPage;
 
 import javax.servlet.ServletException;
@@ -39,11 +41,6 @@ public class UserServlet extends BaseServlet {
     private final MomentService momentService = (MomentService)new ServiceProxyFactory().getProxyInstance(new MomentServiceImpl());
 
 
-    public void test(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        System.out.println("okk");
-
-    }
-
     /**
      * 提供用户注册的业务流程
      * @param req
@@ -51,6 +48,7 @@ public class UserServlet extends BaseServlet {
      * @throws IOException
      * @throws ServletException
      */
+    @Action(method = RequestMethod.REGISTER_DO)
     public void register(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         User user = (User) BeanUtils.populate(req.getParameterMap(), User.class);
         ServiceResult result;
@@ -74,10 +72,10 @@ public class UserServlet extends BaseServlet {
             addToDefaultChat(user);
             //与系统账号加好友
             addToSystemChat(user);
-            addToHYCChat(user);
+            addToGJYChat(user);
             req.setAttribute("message",result.getMessage());
             req.setAttribute("data",result.getData());
-            req.getRequestDispatcher("http://localhost:8080/wechat/pages/index.jsp").forward(req,resp);
+            req.getRequestDispatcher(WebPage.INDEX_JSP.toString()).forward(req,resp);
         }
     }
 
@@ -89,9 +87,10 @@ public class UserServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.LOGIN_DO)
     public void login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user =  BeanUtils.populate(req.getParameterMap(), User.class);
-
+        System.out.println(user);
         ServiceResult result;
         if (user == null) {
             result = new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, null);
@@ -103,23 +102,7 @@ public class UserServlet extends BaseServlet {
         HttpSession session = req.getSession(false);
         //检查用户是否已经建立会话并且已经具有登陆信息
         if (session == null || session.getAttribute("login") == null) {
-            //检查是不是游客登陆，游客登陆的话先创建个游客账号然后登陆
-            if ("visitor".equals(user.getEmail())) {
-                result = userService.visitorLogin();
-                if (Status.ERROR.equals(result.getStatus())) {
-                    req.setAttribute("message",result.getMessage());
-                    req.setAttribute("data",result.getData());
-                    req.getRequestDispatcher(WebPage.LOGIN_JSP.toString()).forward(req,resp);
-                    return;
-                }
-                User visitor = (User) result.getData();
-                //把游客加入聊天总群
-                addToDefaultChat(visitor);
-                //与系统账号加好友
-                addToSystemChat(visitor);
-//                addToHYCChat(visitor);
-            } else {
-                //如果是用户登陆，校验密码是否正确
+                //校验密码是否正确
                 result = userService.checkPassword(user);
                 if (Status.ERROR.equals(result.getStatus())) {
                     req.setAttribute("message",result.getMessage());
@@ -136,17 +119,15 @@ public class UserServlet extends BaseServlet {
                     }
 
                 }
-            }
+
 
         } else {
             //先从session获取用户信息，再更新用户信息到会话中
             user = (User) session.getAttribute("login");
             result = userService.getUser(user.getId());
-            System.out.println(result);
         }
-        System.out.println("ssss");
-        req.getSession(true).setAttribute("login", result.getData());
-        req.getRequestDispatcher("http://localhost:8080/wechat/pages/index.jsp").forward(req,resp);
+         req.getSession(true).setAttribute("login", (User)result.getData());
+         req.getRequestDispatcher(WebPage.INDEX_JSP.toString()).forward(req,resp);
     }
 
     /**
@@ -156,6 +137,7 @@ public class UserServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.GET_DO)
     public void get(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) BeanUtils.populate(req.getParameterMap(), User.class);
         ServiceResult result;
@@ -177,6 +159,7 @@ public class UserServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.LOGOUT_DO)
     public void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         if (session != null) {
@@ -192,6 +175,7 @@ public class UserServlet extends BaseServlet {
      * @param resp
      * @throws IOException
      */
+    @Action(method = RequestMethod.UPDATE_DO)
     public void update(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = (User) jsonToJavaObject(req.getInputStream(), User.class);
         ServiceResult result;
@@ -217,6 +201,7 @@ public class UserServlet extends BaseServlet {
      * @param resp
      * @throws IOException
      */
+    @Action(method = RequestMethod.UPDATEPASSWORD_DO)
     public void updatePwd(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String oldPwd = req.getParameter("old_password");
         String newPwd = req.getParameter("new_password");
@@ -234,6 +219,7 @@ public class UserServlet extends BaseServlet {
      * @param resp
      * @throws IOException
      */
+    @Action(method = RequestMethod.LIST_DO)
     public void list(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = (User) BeanUtils.populate(req.getParameterMap(), User.class);
         ServiceResult result;
@@ -249,7 +235,7 @@ public class UserServlet extends BaseServlet {
      * 提供自动登陆的服务
      * @param req
      */
-    public void autoLogin(HttpServletRequest req) {
+    public void  autoLogin(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -313,11 +299,12 @@ public class UserServlet extends BaseServlet {
         Message message = new Message();
         message.setContent("欢迎使用wechat在线聊天系统，我是本系统的开发者，如果程序在使用的过程中发现一些问题，请刷新一下浏览器.");
     }
+
     /**
      * 将一个用户添加到与系统的会话中
      * @param user
      */
-    private void addToHYCChat(User user) {
+    private void addToGJYChat(User user) {
         Friend friend = new Friend();
         friend.setUserId(BigInteger.valueOf(1));
         friend.setFriendId(user.getId());

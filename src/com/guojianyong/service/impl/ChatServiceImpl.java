@@ -41,7 +41,7 @@ public class ChatServiceImpl implements ChatService {
         if (chat == null) {
             return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, chat);
         }
-        //阻止插入id
+        //阻止插入id，数据库自动增长
         chat.setId(null);
         //检查创建用户是否存在
         if (userDao.getUserById(chat.getOwnerId()) == null) {
@@ -82,7 +82,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     /**
-     * 给已给好友关系创建一个聊天关系，并把两者加入到此聊天，并更新好友关系上的聊天关系id
+     * 给已是好友关系创建一个聊天关系，并把两者加入到此聊天，并更新好友关系上的聊天关系id
      * @param friend
      * @return
      */
@@ -329,7 +329,7 @@ public class ChatServiceImpl implements ChatService {
                 return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_CHAT_NOW.message, chatList);
             }
             for (Chat chat : chatList) {
-                //在私聊中将聊天头像设置未对方头像
+                //在私聊中将聊天头像设置为对方头像
                 if (ChatType.FRIEND.toString().equalsIgnoreCase(chat.getType())) {
                     chat = chatDao.toFriendChat(chat.getId(), user.getId());
                     if (chat == null) {
@@ -447,6 +447,11 @@ public class ChatServiceImpl implements ChatService {
         }
     }
 
+    /**
+     * 群号的正则验证
+     * @param chatNumber
+     * @return
+     */
     private boolean isValidChatNumber(String chatNumber) {
         if (chatNumber == null || chatNumber.trim().isEmpty()) {
             return false;

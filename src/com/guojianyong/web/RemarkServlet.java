@@ -6,6 +6,8 @@ import com.guojianyong.model.ServiceResult;
 import com.guojianyong.service.RemarkService;
 import com.guojianyong.service.factory.ServiceProxyFactory;
 import com.guojianyong.service.impl.RemarkServiceImpl;
+import com.guojianyong.web.annotation.Action;
+import com.guojianyong.web.constant.RequestMethod;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,7 @@ public class RemarkServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.ADD_DO)
     public void postRemark(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Remark remark = (Remark) jsonToJavaObject(req.getInputStream(), Remark.class);
         ServiceResult result;
@@ -44,6 +47,7 @@ public class RemarkServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.LIST_DO)
     public void listRemark(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String momentId = req.getParameter("moment_id");
         String page = req.getParameter("page");
@@ -58,6 +62,7 @@ public class RemarkServlet extends BaseServlet {
      * @param resp
      * @throws IOException
      */
+    @Action(method = RequestMethod.DELETE_DO)
     public void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String remarkId = req.getParameter("remark_id");
         ServiceResult result;

@@ -1,10 +1,13 @@
 package com.guojianyong.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.math.BigInteger;
 
 
 public class Chat extends BaseEntity{
     private String number;
+    @JSONField(name = "owner_id")
     private BigInteger ownerId;
     private String type;
     private String name;

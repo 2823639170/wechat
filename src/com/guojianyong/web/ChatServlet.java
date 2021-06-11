@@ -9,8 +9,10 @@ import com.guojianyong.service.constants.Status;
 import com.guojianyong.service.factory.ServiceProxyFactory;
 import com.guojianyong.service.impl.ChatServiceImpl;
 import com.guojianyong.service.impl.MessageServiceImpl;
-import com.guojianyong.service.serve.ChatServer;
+import com.guojianyong.server.ChatServer;
 import com.guojianyong.utils.BeanUtils;
+import com.guojianyong.web.annotation.Action;
+import com.guojianyong.web.constant.RequestMethod;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,7 @@ public class ChatServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.ADD_DO)
     public void createGroupChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Chat chat = (Chat) jsonToJavaObject(req.getInputStream(), Chat.class);
         ServiceResult result;
@@ -65,6 +68,7 @@ public class ChatServlet extends BaseServlet {
      * @param resp
      * @throws IOException
      */
+    @Action(method = RequestMethod.JOIN_DO)
     public void joinGroupChat(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String number = req.getParameter("number");
         String userId = req.getParameter("user_id");
@@ -91,6 +95,7 @@ public class ChatServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.QUIT_DO)
     public void quitChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Member member = (Member) jsonToJavaObject(req.getInputStream(), Member.class);
         ServiceResult result;
@@ -104,6 +109,7 @@ public class ChatServlet extends BaseServlet {
      * @param resp
      * @throws IOException
      */
+    @Action(method = RequestMethod.REMOVE_DO)
     public void remove(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String memberId = req.getParameter("member_id");
         ServiceResult result;
@@ -125,8 +131,10 @@ public class ChatServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.LIST_DO)
     public void listChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) BeanUtils.populate(req.getParameterMap(), User.class);
+        System.out.println("执行获取聊天");
         ServiceResult result;
         result = chatService.listChat(user);
         returnJsonObject(resp, result);
@@ -139,6 +147,7 @@ public class ChatServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.GET_DO)
     public void getChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String number = req.getParameter("number");
         String userId = req.getParameter("user_id");
@@ -153,6 +162,7 @@ public class ChatServlet extends BaseServlet {
      * @param resp
      * @throws IOException
      */
+    @Action(method = RequestMethod.MEMBER_DO)
     public void listMember(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String chatId = req.getParameter("chat_id");
         ServiceResult result;

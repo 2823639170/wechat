@@ -13,7 +13,9 @@ import com.guojianyong.service.constants.MessageType;
 import com.guojianyong.service.constants.ServiceMessage;
 import com.guojianyong.service.factory.ServiceProxyFactory;
 import com.guojianyong.service.impl.*;
-import com.guojianyong.service.serve.ChatServer;
+import com.guojianyong.server.ChatServer;
+import com.guojianyong.web.annotation.Action;
+import com.guojianyong.web.constant.RequestMethod;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +45,7 @@ public class FriendServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.ADD_DO)
     synchronized public void addFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Friend friend = (Friend) jsonToJavaObject(req.getInputStream(), Friend.class);
         ServiceResult result;
@@ -88,6 +91,7 @@ public class FriendServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.LIST_DO)
     public void listFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         ServiceResult result;
@@ -102,6 +106,7 @@ public class FriendServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.UPDATE_DO)
     public void updateFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Friend friend = (Friend) jsonToJavaObject(req.getInputStream(), Friend.class);
         ServiceResult result;
@@ -115,6 +120,7 @@ public class FriendServlet extends BaseServlet {
      * @param resp
      * @throws IOException
      */
+    @Action(method = RequestMethod.DELETE_DO)
     synchronized public void deleteFriend(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String friendId = req.getParameter("friend_id");
         String userId = req.getParameter("user_id");

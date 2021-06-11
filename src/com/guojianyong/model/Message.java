@@ -2,11 +2,15 @@
 
 package com.guojianyong.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
 public class Message  extends BaseEntity {
+    @JSONField(name = "sender_id")
     private BigInteger senderId;
+    @JSONField(name = "chat_id")
     private BigInteger chatId;
     private String content;
     private String type;

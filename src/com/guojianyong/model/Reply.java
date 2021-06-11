@@ -1,13 +1,18 @@
 package com.guojianyong.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
 public class Reply  extends BaseEntity{
 
 
+    @JSONField(name = "user_id")
     private BigInteger userId;
+    @JSONField(name = "to_uid")
     private BigInteger toUid;
+    @JSONField(name = "remark_id")
     private BigInteger remarkId;
     private Timestamp time;
     private String content;

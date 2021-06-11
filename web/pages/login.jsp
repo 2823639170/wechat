@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,6 +12,11 @@
 
 </head>
 <body>
+		<script>
+			<c:if test="${message!=null}">
+			alert("系统提示：${message}");
+			</c:if>
+		</script>
 		<div id="login_header">
 			<img class="logo_img" alt="" src="static/img/logo1.png" >
 		</div>
@@ -26,7 +32,7 @@
 						<div class="login_box">
 							<div class="tit">
 								<h1>登录</h1>
-								<a href="pages/regist.jsp">立即注册</a>
+								<a href="pages/register.jsp">立即注册</a>
 							</div>
 							<div class="msg_cont">
 								<b></b>
@@ -35,8 +41,8 @@
 								</span>
 							</div>
 							<div class="form">
-								<form action="userServlet" method="post">
-									<input type="hidden" name="action" value="login" />
+								<form action="user" method="post">
+									<input type="hidden" name="method" value="login.do" />
 									<label>  邮 箱： </label>
 									<input class="itxt" type="text" placeholder="请输入用户名"
 										   autocomplete="off" tabindex="1" name="email"

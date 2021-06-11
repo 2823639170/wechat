@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="host" value="localhost:8080/wechat"/>
+<c:set var="host" value="localhost:8080"/>
 <%--设置主机名--%>
 <!DOCTYPE html>
 <html>
@@ -9,10 +9,51 @@
 
     <title>wechat</title>
     <link rel="shortcut icon" type=image/x-icon href=static/img/wechat.ico>
-    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="http://${host}/wechat/static/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="static/css/major.css" >
-    <script src="/static/js/jquery-3.4.1.js"></script>
+    <script src="http://${host}/wechat/static/js/jquery-1.7.2.js"></script>
+    <!--BEGIN——发送请求脚本-->
+    <script>
+        //post方法
+        function postRequest(url, request, callback) {
+            $.post(url, request, function (data, status) {
+                if (status === 'error') {
+                    alert("请求发送失败，请刷新浏览器重试或检查网络");
+                }
+                var result = eval("(" + data + ")");
+                if (result.message != null && result.message !== '') {
+                    alert("系统提示：" + result.message);
+                }
+                callback(result);
 
+            });
+        }
+
+        //ajax方法
+        function ajaxJsonRequest(url, data, callback) {
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.message != null && data.message !== '') {
+                        alert("系统提示：" + data.message);
+                    }
+                    callback(data);
+                },
+                Error: function (xhr, error, exception) {
+                    alert("请求发送失败，请刷新浏览器重试或检查网络");
+                    alert(exception.toString());
+                    callback(data);
+                }
+            });
+        }
+
+
+    </script>
+    <!--END——发送请求脚本-->
 </head>
 <body>
 <div class="page-body" style="background-color: #eee;">
@@ -206,7 +247,7 @@
     <!--END——菜单列表-->
 
     <!--BEGIN——右边窗口-->
-    <div id="right-page" data-window="-1">
+    <div id="right-page" data-window="-1" class = "right-page">
 
         <!--BEGIN——聊天窗口-->
         <div id="-1" class="chat-box" style="display:block;background: transparent;">
@@ -214,7 +255,7 @@
                    
 
                 <div class="chat-output-content-left">       
-                    <img src="${pageContext.request.contextPath}/upload/photo/系统.jpg" alt="头像"
+                    <img src="${pageContext.request.contextPath}/upload/photo/系统头像.png" alt="头像"
                          class="chat-output-head-photo-left">     
                     <h4 class="chat-output-meta-left">系统账号</h4>
                     <div class="chat-output-bubble-left">
@@ -430,7 +471,7 @@
 
     //创建群聊
     function createChat() {
-        var name = prompt("请输入群聊名称", "广工夸夸群");
+        var name = prompt("请输入群聊名称", "");
         if (name == null) {
             return;
         }
@@ -461,7 +502,7 @@
 
     //修改好友信息
     function updateFriend(id) {
-        var alias = prompt("请输入好友昵称", "蔡徐坤");
+        var alias = prompt("请输入好友昵称", "");
         if (alias == null) {
             return;
         }
@@ -566,7 +607,7 @@
             alert("正在退出登陆，请稍后...");
             postRequest(url, request, function (result) {
                 if (result.status === 'SUCCESS') {
-                    window.location.href = '${pageContext.request.contextPath}/login.jsp';
+                    window.location.href = '${pageContext.request.contextPath}/pages/login.jsp';
                 }
             });
         } else {
@@ -654,6 +695,7 @@
             method: "list.do",
             id: "${sessionScope.login.id}"
         };
+
         postRequest(url, request, function (result) {
             var chats = result.data;
             console.log("查询到聊天窗口数量：" + chats.length);
@@ -661,6 +703,7 @@
                 loadChatListOnMenu(chats[i]);
                 loadChatBox(chats[i]);
             }
+
             loadUnReadMessage(1);
         });
     }
@@ -763,10 +806,16 @@
             chat_id: chat_id,
             page: page,
         };
+        // alert(request.user_id);
+        // alert(request.chat_id);
         postRequest(url, request, function (result) {
             document.getElementById(chat_id + "accept-message").innerHTML = '';
             var messages = result.data;
             for (var i = messages.length - 1; i >= 0; i--) {
+                // alert(messages[i]);
+                // var jsonData = JSON.stringify(messages[i]);
+                // alert(jsonData);
+                // alert(messages.chatId);
                 showMessage(messages[i]);
             }
         });
@@ -809,6 +858,8 @@
                 addMomentBlockHtml(moments[i]);
             }
         });
+        var jsonData = JSON.stringify(mement);
+        alert(jsonData);
         showWindowOnRight('moment-box');
     }
 
@@ -1434,6 +1485,7 @@
         } else {
             alert("您的设备不支持文件预览功能，如需该功能请升级您的设备！");
         }
+
         //获取文件
         var file = fileDom.files[0];
         //文件大小
@@ -1466,7 +1518,7 @@
                         alert("系统提示：" + result.message);
                     }
                     if ("SUCCESS" === result.status) {
-                        var html = '<a href="http://${host}/upload/file/' + result.data + '" download="' + file.name + '">下载</a>';
+                        var html = '<a href="http://${host}/wechat/upload/file/' + result.data + '" download="' + file.name + '">下载</a>';
                         document.getElementById(preview).value += '[文件：' + file.name + ']' + html;
                         sendMessage(chat_id, "file");
                     }
@@ -1567,20 +1619,6 @@
 
     //插入一个搜索用户的结果
     function addSearchUserResultHtml(user) {
-        <%--var html = '                   <div class="info-detail-block">               \n' +--%>
-        <%--    // '                        <div class="user-box" style="border-top: 1px solid;margin: 20px;">\n' +--%>
-        <%--    '                            <div class="user-photo" style="margin: 20px">\n' +--%>
-        <%--    '                                <img src="${pageContext.request.contextPath}/upload/photo/' + user.photo + '" alt="用户头像" class="my-photo">\n' +--%>
-        <%--    '                            </div>\n' +--%>
-        <%--    '                            <div class="user-info">\n' +--%>
-        <%--    '                                <h3 class="my-name" style="color: #333；width: fit-content;">' + user.name + '</h3>\n' +--%>
-        <%--    '                            <button onclick="addFriend(\'' + user.id + '\')" style="float: right"\n' +--%>
-        <%--    '                                    contenteditable="false">加好友\n' +--%>
-        <%--    '                            </button>\n' +--%>
-        <%--    '                            </div>\n' +--%>
-        <%--    '                                <p class="my-message" style="margin-top:-25px;">' + user.signature + '</p>\n' +--%>
-        <%--    // '                        </div>\n' +--%>
-        <%--    '                    </div>';--%>
         var html = '                   <div class="info-detail-block" style="  width: 95%;min-width:300px;">               \n' +
             // '                        <div class="user-box" style="border-top: 1px solid;margin: 20px;">\n' +
             '                            <div class="user-photo" style="margin: 20px">\n' +
@@ -1821,10 +1859,17 @@
             '    <div class="chat-output-bubble-left">\n' +
             '        <div class="chat-output-bubble-inner">\n' +
             '            <pre class="chat-output-bubble-pre-left">' + message.content + '</pre></div></div></div>';
+
+        // var jsonData = JSON.stringify(message);
+        // alert(jsonData);
+        // alert(message.sender_id);
+        // alert(message.chat_id);
         if (message.sender_id ===${sessionScope.login.id}) {
             document.getElementById(message.chat_id + "accept-message").innerHTML += '<br/>' + right_bubble_html;
+            // alert('左');
         } else {
-            document.getElementById(message.chat_id + "accept-message").innerHTML += '<br/>' + left_bubble_html;
+          document.getElementById(message.chat_id + "accept-message").innerHTML += '<br/>' + left_bubble_html;
+          // alert('右');
         }
         document.getElementById(message.chat_id + "accept-message").scrollTop = document.getElementById(message.chat_id + "accept-message").scrollHeight;
         //显示在列表上
@@ -1839,6 +1884,7 @@
 
     //显示消息
     function showMessage(message) {
+        // alert(message.type);
         if (message.type === "system") {
             alert(message.content);
             return;
@@ -1865,8 +1911,8 @@
 <!--BEGIN——websocket脚本-->
 <script type="text/javascript">
     var websocket = null;
-    var url = "ws://${host}/server/chat/${sessionScope.login.id}";
-
+    <%--var url = "ws://${host}/server/chat/${sessionScope.login.id}";--%>
+    var url = "ws://${host}/wechat/chat/${sessionScope.login.id}";
     function connectWebsocket() {
 
         //判断当前浏览器是否支持WebSocket
@@ -1884,6 +1930,7 @@
 
         //连接成功建立的回调方法
         websocket.onopen = function () {
+
         }
 
         //接收到消息的回调方法
@@ -1916,56 +1963,551 @@
 </script>
 <!--END——websocket脚本-->
 <!--BEGIN——预加载脚本-->
-<script>
+<script type="text/javascript">
     //请求聊天列表
-    loadChatListAndBox();
-    loadFriendList();
-    connectWebsocket();
+    //     alert($);
+        loadChatListAndBox();
+        loadFriendList();
+        connectWebsocket();
+
+
 </script>
 <!--END——预加载脚本-->
-<!--BEGIN——发送请求脚本-->
-<script>
-    //post方法
-    function postRequest(url, request, callback) {
-        $.post(url, request, function (data, status) {
-            if (status === 'error') {
-                alert("请求发送失败，请刷新浏览器重试或检查网络");
-            }
-            var result = eval("(" + data + ")");
-            if (result.message != null && result.message !== '') {
-                alert("系统提示：" + result.message);
-            }
-            callback(result);
-
-        });
-    }
-
-    //ajax方法
-    function ajaxJsonRequest(url, data, callback) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function (data) {
-                if (data.message != null && data.message !== '') {
-                    alert("系统提示：" + data.message);
-                }
-                callback(data);
-            },
-            Error: function (xhr, error, exception) {
-                alert("请求发送失败，请刷新浏览器重试或检查网络");
-                alert(exception.toString());
-                callback(data);
-            }
-        });
-    }
-
-
-</script>
-<!--END——发送请求脚本-->
 </body>
+<style>
+    .info-box {
+        position: relative;
+        background-color: #eee;
+        overflow: hidden
+    }
+
+    .info-box-head {
+        text-align: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        line-height: 40px
+    }
+
+    .info-head-img {
+        width: 220px;
+        height: 220px;
+        margin: 62px;
+        border-radius: 14px;
+        float: left;
+    }
+
+    .info-head-info {
+        float: left;
+        margin-top: 89px;
+        max-width: 360px;
+        overflow: hidden
+    }
+
+    .info-head-nickname {
+        font-size: 53px;
+        max-height: 200px;
+        overflow: hidden;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+    .info-box-title {
+        position: relative;
+        padding: 10px 0;
+        margin: 0 19px;
+        border-bottom: 1px solid #d6d6d6;
+        background-color: #eee;
+        z-index: 1024
+    }
+
+    .info-box-title-box {
+        font-weight: 400;
+        height: 25px;
+        display: inline-block;
+        font-size: 23px;
+        float: left
+    }
+
+    .info-box-title-text {
+        display: inline-block;
+        vertical-align: middle;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: normal;
+        text-decoration: none;
+        color: #000;
+        font-weight: 400;
+    }
+
+    .info-outline {
+        float: left;
+        height: fit-content;
+        width: 100%;
+    }
+
+    .info-detail {
+        float: left;
+        height: fit-content;
+        width: 100%;
+    }
+
+    .info-detail-block {
+        float: left;
+        height: fit-content;
+        width: 100%;
+        margin-bottom: 20px;
+        min-width: 850px;
+    }
+
+    .info-detail-item {
+        height: 50px;
+        font-size: 34px;
+        padding-left: 62px;
+        text-align: left;
+        position: absolute;
+        width: 255px;
+    }
+
+    .info-detail-value {
+        text-align: left;
+        width: 800px;
+        font-size: 34px;
+        height: 50px;
+        position: relative;
+        margin-left: 300px;
+        border-bottom: solid 2px #ccc;
+        outline: none;
+        white-space: nowrap;
+    }
+
+    .input-text-content {
+        border-top: 1px solid #d6d6d6;
+        height: 200px;
+        width: 90%;
+        margin-left: 30px;
+        margin-right: 30px;
+        margin-bottom: 15px;
+        resize: none;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-left: 20px;
+        outline: solid;
+        border: 0;
+        font-size: 25px;
+        background-color: #eee
+    }
+
+    .info-submit-box {
+        position: fixed;
+        height: 250px;
+        bottom: 0;
+        min-height: 250px;
+        border-top: 1px solid #d6d6d6;
+    }
+
+    .info-detail-box {
+        overflow: scroll;
+        position: relative;
+        margin-bottom: 0px;
+        margin-right: 0px;
+        margin-top: 80px;
+        min-height: 682px;
+        height: -webkit-fill-available;
+    }
+
+    .page-body {
+        min-width: 800px;
+        margin: 0 auto;
+        border-radius: 3px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .menu {
+        width: 30%;
+        position: relative;
+        /*height: 750px;*/
+        height: ;
+        min-height: 750px;
+        float: left;
+        overflow: scroll;
+        background: #2e3238;
+        display: block;
+    }
+
+    .menu-head {
+        padding: 18px;
+        position: relative;
+    }
+
+    .menu-head-photo {
+        display: table-cell;
+        vertical-align: middle;
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: nowrap;
+        padding-right: 10.625px;
+    }
+
+    .menu-head-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        display: block;
+        cursor: pointer;
+    }
+
+    .menu-head-info {
+        display: table-cell;
+        vertical-align: middle;
+        word-wrap: break-word;
+        word-break: break-all;
+        width: 2000px;
+    }
+
+    .menu-head-nickname {
+        font-weight: 400;
+        font-size: 30px;
+        color: #fff;
+        line-height: 20px;
+        margin-top: 5px;
+    }
+
+    .menu-search {
+        position: relative;
+        width: -webkit-fill-available;
+        margin: 30px;
+    }
+
+    .menu-search-icon {
+        position: absolute;
+        z-index: 101;
+        top: 1px;
+    }
+
+    .search-button {
+        padding: 13px;
+        float: right;
+        height: 50px;
+        width: 55px;
+        background-color: #3A3F45;
+        color: white;
+    }
+
+
+    .menu-search-bar {
+        height: 50px;
+        line-height: 32px;
+        border: 0;
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        background-color: #26292e;
+        color: #fff;
+        padding-left: 10px;
+        font-size: 20px;
+        width: 70%;
+    }
+
+    .menu-option {
+        overflow: hidden;
+        position: relative;
+        padding-bottom: 4px;
+    }
+
+    .menu-option-item {
+        float: left;
+        width: 25%;
+        position: relative;
+    }
+
+    .menu-option-button {
+        padding: 13px;
+        margin: auto;
+        height: 39px;
+        width: 90px;
+        background-color: #3A3F45;
+        color: white;
+    }
+
+
+    .menu-option-chat {
+        display: block;
+        text-align: center;
+    }
+
+    .user-photo {
+        float: left;
+        margin-right: 10px;
+        position: relative
+    }
+
+    .my-photo {
+        display: block;
+        width: 60px;
+        height: 60px;
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px
+    }
+
+    .user-list-block-href {
+        background: #2e3238;
+        border: 0px;
+        outline: none;
+    }
+
+    .user-list-block {
+        display: block;
+    }
+
+    .user-info {
+        overflow: hidden;
+        height: 60px;
+    }
+
+    .user-box {
+        overflow: hidden;
+        padding: 12px 18px 11px;
+        border-bottom: 1px solid #292c33;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .my-name {
+        font-weight: 400;
+        font-size: 20px;
+        color: #fff;
+        line-height: 20px;
+        margin-top: 5px;
+        float: left;
+        width: 100%;
+        text-align: left;
+
+    }
+
+    .my-message {
+        color: #989898;
+        font-size: 17px;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: normal;
+        height: 1.5em;
+        float: left;
+        text-align: left;
+        margin-right: 20px;
+        width: 300px;
+
+    }
+    .right-page {
+
+    }
+
+    .chat-box {
+        position: relative;
+        background-color: #eee;
+        height: -webkit-fill-available;
+        overflow: hidden
+    }
+
+    .chat-box-head {
+        text-align: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        line-height: 40px;
+        background-color: #eee;
+
+    }
+
+    .chat-box-title {
+        position: fixed;
+        /* padding: 10px 0; */
+        padding-left: 20px;
+        padding-right: 20px;
+        /* align-items: center; */
+        /* margin: 0 19px; */
+        /* width: auto; */
+        width:-webkit-fill-available;
+        max-width: 70%;
+        border-bottom: 1px solid #d6d6d6;
+        background-color: #eee;
+        z-index: 999;
+        right: 0px;
+        height: 60px;
+    }
+
+    .chat-box-title-box {
+        font-weight: 400;
+        height: 25px;
+        display: inline-block;
+        font-size: 23px;
+    }
+
+    .chat-box-title-text {
+        vertical-align: middle;
+        max-width: 70%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: normal;
+        text-decoration: none;
+        color: #000;
+        font-weight: 400;
+        width: fit-content;
+        position: fixed;
+        height: fit-content;
+        display: inline-block;
+        font-size: 23px;
+        margin-top: 10px
+    }
+
+    .chat-input-box {
+        position: fixed;
+        height: 200px;
+        bottom: 0;
+        min-height: 200px;
+        border-top: 1px solid #d6d6d6;
+    }
+
+    .text-area {
+        border-top: 1px solid #d6d6d6;
+        height: 200px;
+        width: 100%;
+        margin-bottom: 15px;
+        resize: none;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-left: 20px;
+        outline: none;
+        border: 0;
+        font-size: 25px;
+        background-color: #eee;
+    }
+
+    .chat-output-box {
+        background: transparent;
+        position: relative;
+        /* margin-bottom: 200px; */
+        padding-bottom: 200px;
+        padding-top: 80px;
+        margin-right: 0px;
+        /* margin-top: 80px; */
+        min-height: 443px;
+        /* max-height: 473px; */
+        height:-webkit-fill-available;
+        overflow: scroll;
+    }
+
+    .chat-output-head-photo-right {
+        float: right;
+        width: 60px;
+        height: 60px;
+        margin-right: 15px;
+    }
+
+    .chat-output-head-photo-left {
+        float: left;
+        width: 60px;
+        height: 60px;
+        margin-left: 15px;
+        margin-top: 15px
+    }
+
+    .chat-output-content-right {
+        overflow: hidden;
+        text-align: right;
+    }
+
+    .chat-output-content-left {
+        overflow: hidden;
+        text-align: left;
+    }
+
+    .chat-output-meta-left {
+        font-weight: 400;
+        padding-left: 10px;
+        height: 20px;
+        line-height: 18px;
+        color: #4f4f4f;
+        width: 500px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: normal;
+        margin-top: 22px
+    }
+
+    .chat-output-bubble-right {
+        max-width: 500px;
+        /*min-height: 55px;*/
+        display: inline-block;
+        vertical-align: top;
+        position: relative;
+        text-align: left;
+        font-size: 20px;
+        -webkit-border-radius: 3px;
+        margin-right: 10px;
+
+    }
+
+    .chat-output-bubble-left {
+        background-color: #eeeeee;
+        max-width: 500px;
+        /*min-height: 55px;*/
+        display: inline-block;
+        vertical-align: top;
+        position: relative;
+        text-align: left;
+        font-size: 20px;
+        -webkit-border-radius: 3px;
+        margin-left: 10px;
+
+    }
+
+    .chat-output-bubble-inner {
+        word-wrap: break-word;
+        word-break: break-all;
+        min-height: 25px;
+    }
+
+    .chat-output-bubble-pre-right {
+        background-color: #b2e281;
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .chat-output-bubble-pre-left {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .button {
+        float: right;
+        outline: none;
+        border: none;
+        height: 40px;
+        margin-top: 10px;
+        margin-right: 5px;
+        z-index: 99;
+    }
+</style>
 </html>
 
 

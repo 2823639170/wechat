@@ -26,7 +26,7 @@ public interface FriendDao extends BaseDao {
      */
     @ExtSelect(value = "select f.id,f.user_id,f.friend_id,f.chat_id,f.group_id,f.alias,f.description,u.photo as photo,f.status,f.gmt_create,f.gmt_modified " +
             "from friend as f,user as u where f.user_id = ? and u.id = f.friend_id ")
-    List listByUserId(Object userId);
+    List<Friend> listByUserId(Object userId);
 
 
     /**

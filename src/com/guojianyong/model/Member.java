@@ -2,11 +2,16 @@
 
 package com.guojianyong.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.math.BigInteger;
 
 public class Member extends BaseEntity  {
+    @JSONField(name = "user_id")
     private BigInteger userId;
+    @JSONField(name = "chat_id")
     private BigInteger chatId;
+    @JSONField(name = "group_alias")
     private String groupAlias;
     private String apply;
     private String background;

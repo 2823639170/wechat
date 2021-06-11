@@ -6,6 +6,8 @@ import com.guojianyong.model.ServiceResult;
 import com.guojianyong.service.MomentService;
 import com.guojianyong.service.factory.ServiceProxyFactory;
 import com.guojianyong.service.impl.MomentServiceImpl;
+import com.guojianyong.web.annotation.Action;
+import com.guojianyong.web.constant.RequestMethod;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +31,7 @@ public class MomentServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.ADD_DO)
     public void postMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Moment moment = (Moment) jsonToJavaObject(req.getInputStream(), Moment.class);
         ServiceResult result;
@@ -43,6 +46,7 @@ public class MomentServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.DELETE_DO)
     public void deleteMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String momentId = req.getParameter("moment_id");
         ServiceResult result;
@@ -57,6 +61,7 @@ public class MomentServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.UPDATE_DO)
     public void updateMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Moment moment = (Moment) jsonToJavaObject(req.getInputStream(), Moment.class);
         ServiceResult result;
@@ -71,6 +76,7 @@ public class MomentServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.MOMENT_DO)
     public void listMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String page = req.getParameter("page");
@@ -86,6 +92,7 @@ public class MomentServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.NEWS_DO)
     public void listNews(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String page = req.getParameter("page");
@@ -102,6 +109,7 @@ public class MomentServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.PHOTO_DO)
     public void listPhoto(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String page = req.getParameter("page");
@@ -117,6 +125,7 @@ public class MomentServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.LOVE_DO)
     public void love(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String momentId = req.getParameter("moment_id");

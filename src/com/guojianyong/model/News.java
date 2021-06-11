@@ -1,12 +1,16 @@
 package com.guojianyong.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.math.BigInteger;
 
 /**
  * 动态表的实体类
  */
 public class News  extends BaseEntity {
+    @JSONField(name = "user_id")
     private BigInteger userId;
+    @JSONField(name = "moment_Id")
     private BigInteger momentId;
     private Boolean loved;
     private Boolean shared;

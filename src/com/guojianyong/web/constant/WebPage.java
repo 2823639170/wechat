@@ -11,44 +11,21 @@ public enum WebPage {
      */
     REGISTER_JSP,
     /**
-     * 网站首页
-     */
-    INDEX_JSP,
-    /**
      * 错误页面
      */
     ERROR_JSP,
-    /**
-     * 房间页面
+     /**
+     * 主页面
      */
-    ROOM_JSP,
+    INDEX_JSP,
+
     /**
      * 登陆界面
      */
-    LOGIN_JSP,
-    /**
-     * 用户界面
-     */
-    USER_JSP,
-    /**
-     * 订单界面
-     */
-    ORDER_JSP,
-    /**
-     * 成功页面
-     */
-    SUCCESS_JSP,
-    /**
-     * 评论界面
-     */
-    REMARK_JSP,
-    /**
-     * 相册页面
-     */
-    PICTRUES_JSP;
+    LOGIN_JSP;
 
     @Override
     public String toString() {
-        return "/"+super.toString().toLowerCase().replaceAll("_", ".");
+        return "/pages/"+super.toString().toLowerCase().replaceAll("_", ".");
     }
 }

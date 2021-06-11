@@ -1,6 +1,7 @@
 package com.guojianyong.model.vo;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.guojianyong.model.Moment;
 
 /**
@@ -8,13 +9,13 @@ import com.guojianyong.model.Moment;
  */
 public class MomentVO extends Moment {
 
-    //@JSONField(name = "user_name")
+    @JSONField(name = "user_name")
     private String userName;
     private Boolean loved;
     private Boolean shared;
     private Boolean viewed;
     private Boolean collected;
-    //@JSONField(name = "user_photo")
+    @JSONField(name = "user_photo")
     private String userPhoto;
 
     public String getUserPhoto() {

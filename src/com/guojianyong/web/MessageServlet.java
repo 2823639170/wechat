@@ -5,6 +5,8 @@ import com.guojianyong.service.MessageService;
 import com.guojianyong.service.constants.ServiceMessage;
 import com.guojianyong.service.factory.ServiceProxyFactory;
 import com.guojianyong.service.impl.MessageServiceImpl;
+import com.guojianyong.web.annotation.Action;
+import com.guojianyong.web.constant.RequestMethod;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,12 +30,15 @@ public class MessageServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.LIST_DO)
     public void listMessage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("执行获取消息的方法");
         String userId = req.getParameter("user_id");
         String chatId = req.getParameter("chat_id");
         String page = req.getParameter("page");
         ServiceResult result = null;
         result = messageService.listAllMessage(new BigInteger(userId), new BigInteger(chatId), new Integer(page));
+        System.out.println("11111111111:::::"+result.getData().toString());
         returnJsonObject(resp, result);
     }
 
@@ -45,6 +50,7 @@ public class MessageServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.UNREAD_DO)
     public void listUnreadMessage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String page = req.getParameter("page");
@@ -67,6 +73,7 @@ public class MessageServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.READ_DO)
     public void read(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String chatId = req.getParameter("chat_id");
@@ -83,6 +90,7 @@ public class MessageServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.CLEAR_DO)
     public void clear(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String chatId = req.getParameter("chat_id");
@@ -98,6 +106,7 @@ public class MessageServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
+    @Action(method = RequestMethod.EXPORT_DO)
     public void export(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String chatId = req.getParameter("chat_id");

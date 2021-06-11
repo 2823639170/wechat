@@ -2,14 +2,15 @@
 package com.guojianyong.model.vo;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.guojianyong.model.Remark;
 
 
 public class RemarkVO extends Remark {
 
-    //@JSONField(name = "user_name")
+    @JSONField(name = "user_name")
     private String userName;
-    //@JSONField(name = "user_photo")
+    @JSONField(name = "user_photo")
     private String userPhoto;
 
     public String getUserName() {

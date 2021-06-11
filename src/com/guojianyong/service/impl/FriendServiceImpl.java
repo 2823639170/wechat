@@ -224,6 +224,4 @@ public class FriendServiceImpl implements FriendService {
         }
         return friend;
     }
-
-
 }
