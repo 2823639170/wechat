@@ -54,7 +54,7 @@ public abstract class MyAbstractDataSource implements MyDataSourceInterface{
         return driver;
     }
 
-    public void setDriver(String driver) {
+    public  void setDriver(String driver) {
         this.driver = driver;
     }
 

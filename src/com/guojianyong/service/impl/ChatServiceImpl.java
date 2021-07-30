@@ -200,13 +200,13 @@ public class ChatServiceImpl implements ChatService {
     }
 
 
-    /**
+    /**防止对公共数据造成错误
      * 把用户添加到聊天中
      * @param members
      * @return
      */
     @Override
-    synchronized public ServiceResult joinChat(Member[] members) {
+   synchronized public ServiceResult joinChat(Member[] members) {
         try {
             for (Member member : members) {
                 //阻止插入id

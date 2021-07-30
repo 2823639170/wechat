@@ -32,13 +32,11 @@ public class MessageServlet extends BaseServlet {
      */
     @Action(method = RequestMethod.LIST_DO)
     public void listMessage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("执行获取消息的方法");
         String userId = req.getParameter("user_id");
         String chatId = req.getParameter("chat_id");
         String page = req.getParameter("page");
         ServiceResult result = null;
         result = messageService.listAllMessage(new BigInteger(userId), new BigInteger(chatId), new Integer(page));
-        System.out.println("11111111111:::::"+result.getData().toString());
         returnJsonObject(resp, result);
     }
 

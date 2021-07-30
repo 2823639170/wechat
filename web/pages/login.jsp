@@ -55,9 +55,9 @@
 									<%--<input class="itxt" type="checkbox" name="remember"--%>
 										   <%--value="是否记住登陆" />--%>
 									<br/>
-									<div class="remember-me">
-										<input id="option" name="auto_login" type="checkbox" value="true">记住登陆
-									</div>
+									<%--<div class="remember-me">--%>
+										<%--<input id="option" name="auto_login" type="checkbox" value="true">记住登陆--%>
+									<%--</div>--%>
 									<br />
 									<input type="submit" value="登录" id="sub_btn" />
 								</form>

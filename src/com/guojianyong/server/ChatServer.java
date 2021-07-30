@@ -40,7 +40,6 @@ public class ChatServer {
      *              静态类变量，负责记录系统数据
      **************************************************************
      */
-
     private static final MessageService MESSAGE_SERVICE = (MessageService) new ServiceProxyFactory().getProxyInstance(new MessageServiceImpl());
     private static final UserDao USER_DAO = SqlSession.getMapper(UserDao.class);
     private static final ChatDao CHAT_DAO = SqlSession.getMapper(ChatDao.class);

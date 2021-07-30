@@ -36,6 +36,7 @@ public class UploadServiceImpl implements UploadService {
     public ServiceResult uploadPhoto(Part part, Object id, String tableName) {
         String fileName;
         try {
+            //获取名字并下载
             fileName = toPhotoName(part);
             if ("user".equalsIgnoreCase(tableName)) {
                 User user = new User();

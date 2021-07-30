@@ -49,12 +49,6 @@ public class FriendServlet extends BaseServlet {
     synchronized public void addFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Friend friend = (Friend) jsonToJavaObject(req.getInputStream(), Friend.class);
         ServiceResult result;
-//        //已经是好友不可重复添加
-//        if (friendService.isFriend(friend)) {
-//            result = new ServiceResult(Status.ERROR, ALREADY_ADD_FRIEND.message, friend);
-//            returnJsonObject(resp, result);
-//            return;
-//        }
         //加好友
         result = friendService.addFriend(friend);
         if (ERROR.equals(result.getStatus())) {
